@@ -18,13 +18,13 @@ class Game {
         this.enemy.update();
 
         if(Game.checkCollision(this.player1.getPosition(), this.enemy.getPosition())) {
-            alert('Blauw');
-            window.location.href = '/';
+            this.player1.addScore();
+            this.enemy.reset();
         }
 
         if(Game.checkCollision(this.player2.getPosition(), this.enemy.getPosition())) {
-            alert('Rood');
-            window.location.href = '/';
+            this.player2.addScore();
+            this.enemy.reset();
         }
 
         requestAnimationFrame(() => this.gameLoop())

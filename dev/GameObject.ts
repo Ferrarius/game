@@ -16,10 +16,6 @@ class GameObject {
         this.width = width;
         this.element.style.display = 'inline-block';
         this.element.style.position = 'absolute';
-        this.element.style.height = this.height.toString()+'px';
-        this.element.style.width = this.width.toString()+'px';
-        this.element.style.transform = "translate(" + this.x + "px, " + this.y + "px)";
-        document.body.appendChild(this.element);
     }
 
     public getPosition() {
@@ -27,8 +23,9 @@ class GameObject {
     }
 
     public update() : void {
-        this.element.style.transform = "translate(" + this.x + "px, " + this.y + "px)";
-        this.element.style.width = this.width.toString()+'px';
         this.element.style.height = this.height.toString()+'px';
+        this.element.style.width = this.width.toString()+'px';
+        this.element.style.transform = "translate(" + this.x + "px, " + this.y + "px)";
+        document.body.appendChild(this.element);
     }
 }

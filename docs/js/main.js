@@ -19,18 +19,15 @@ var GameObject = (function () {
         this.width = width;
         this.element.style.display = 'inline-block';
         this.element.style.position = 'absolute';
-        this.element.style.height = this.height.toString() + 'px';
-        this.element.style.width = this.width.toString() + 'px';
-        this.element.style.transform = "translate(" + this.x + "px, " + this.y + "px)";
-        document.body.appendChild(this.element);
     }
     GameObject.prototype.getPosition = function () {
         return this.element.getBoundingClientRect();
     };
     GameObject.prototype.update = function () {
-        this.element.style.transform = "translate(" + this.x + "px, " + this.y + "px)";
-        this.element.style.width = this.width.toString() + 'px';
         this.element.style.height = this.height.toString() + 'px';
+        this.element.style.width = this.width.toString() + 'px';
+        this.element.style.transform = "translate(" + this.x + "px, " + this.y + "px)";
+        document.body.appendChild(this.element);
     };
     return GameObject;
 }());
@@ -41,27 +38,28 @@ var Enemy = (function (_super) {
         var width = 50;
         var height = 50;
         _this = _super.call(this, 'enemy', 'black', width, height, Math.floor((Math.random() * (window.innerWidth - width)) + 1), Math.floor((Math.random() * (window.innerHeight - height)) + 1)) || this;
-        setInterval(function () { return _this.moveRandom(); }, 10);
+        setInterval(function () { return _this.moveRandom(); }, 100);
         return _this;
     }
     Enemy.prototype.moveRandom = function () {
         var randomNumber = Math.floor(Math.random() * 4);
         switch (randomNumber) {
             case 0:
-                this.y -= 5;
+                this.y -= 50;
                 break;
             case 1:
-                this.x -= 5;
+                this.x -= 50;
                 break;
             case 2:
-                this.y += 5;
+                this.y += 50;
                 break;
             case 3:
-                this.y += 5;
+                this.x += 50;
                 break;
         }
-        for (var i = 0; i < 5; i++) {
-            if (this.y - i === window.innerHeight || this.x - i === window.innerWidth || this.y + i === window.innerHeight || this.x + i === window.innerWidth) {
+        for (var i = 0; i < 50; i++) {
+            console.log(this.x, this.y);
+            if (this.y - i === window.innerHeight || this.x - i === window.innerWidth || this.y + i === window.innerHeight || this.x + i === window.innerWidth || this.y + i === 0 || this.x + i === 0 || this.y - i === 0 || this.x - i === 0) {
                 this.reset();
             }
         }
@@ -85,12 +83,12 @@ var Game = (function () {
         this.player2.update();
         this.enemy.update();
         if (Game.checkCollision(this.player1.getPosition(), this.enemy.getPosition())) {
-            alert('Blauw');
-            window.location.href = '/';
+            this.player1.addScore();
+            this.enemy.reset();
         }
         if (Game.checkCollision(this.player2.getPosition(), this.enemy.getPosition())) {
-            alert('Rood');
-            window.location.href = '/';
+            this.player2.addScore();
+            this.enemy.reset();
         }
         requestAnimationFrame(function () { return _this.gameLoop(); });
     };
@@ -103,6 +101,10 @@ var Player = (function (_super) {
     __extends(Player, _super);
     function Player(name, x, y, color, upKey, leftKey, downKey, rightKey) {
         var _this = _super.call(this, name, color, 100, 100, x, y) || this;
+        _this.score = 0;
+        _this.element.innerText = _this.score.toString();
+        _this.element.style.fontSize = '50px';
+        _this.element.style.textAlign = 'center';
         window.addEventListener("keydown", function (e) { return _this.onKeyDown(e, upKey, leftKey, downKey, rightKey); });
         return _this;
     }
@@ -121,6 +123,10 @@ var Player = (function (_super) {
                 this.x += 50;
                 break;
         }
+    };
+    Player.prototype.addScore = function () {
+        this.score += 1;
+        this.element.innerText = (this.score).toString();
     };
     return Player;
 }(GameObject));
