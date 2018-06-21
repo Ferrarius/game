@@ -188,3 +188,4 @@ Als verschillende classes dezelfde code moeten kunnen gebruiken en om geen dubbe
     }
 ```
 ## Classdiagram
+![alt text](game/Class Diagram for ATM.png)
