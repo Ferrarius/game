@@ -188,4 +188,4 @@ Als verschillende classes dezelfde code moeten kunnen gebruiken en om geen dubbe
     }
 ```
 ## Classdiagram
-![Classdiagram]('game/Class Diagram for ATM.png')
+![Classdiagram]('https://github.com/Ferrarius/game/Class Diagram for ATM.png')
