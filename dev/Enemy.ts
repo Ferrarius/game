@@ -29,11 +29,8 @@ class Enemy extends GameObject {
                 break;
         }
 
-        for(let i=0; i<50; i++) {
-            console.log(this.x, this.y);
-            if (this.y-i === window.innerHeight || this.x-i === window.innerWidth || this.y+i === window.innerHeight || this.x+i === window.innerWidth || this.y+i === 0 || this.x+i === 0 || this.y-i === 0 || this.x-i === 0) {
-                this.reset();
-            }
+        if(this.y < 0 || this.y > innerHeight-this.height-50 || this.x < 0 || this.x > innerWidth-this.width-50) {
+            this.reset();
         }
     }
 

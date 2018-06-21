@@ -2,11 +2,13 @@
 
 class Player extends GameObject {
 
+    public name:string;
     public score:number = 0;
 
     constructor(name:string, x:number, y:number, color:string, upKey:string, leftKey:string, downKey:string, rightKey:string) {
         super(name, color, 100, 100, x, y);
 
+        this.name = name;
         this.element.innerText = this.score.toString();
         this.element.style.fontSize = '50px';
         this.element.style.textAlign = 'center';
@@ -15,18 +17,26 @@ class Player extends GameObject {
     }
 
     private onKeyDown(event:KeyboardEvent, upKey:string, leftKey:string, downKey:string, rightKey:string):void {
-        switch(event.key){
+        switch(event.key) {
             case upKey:
-                this.y -= 50;
+                if(this.y !> 0) {
+                    this.y -= 50;
+                }
                 break;
             case leftKey:
-                this.x -= 50;
+                if(this.x !> 0 ) {
+                    this.x -= 50;
+                }
                 break;
             case downKey:
-                this.y += 50;
+                if(this.y !< window.innerHeight-this.height-50) {
+                    this.y += 50;
+                }
                 break;
             case rightKey:
-                this.x += 50;
+                if(this.x !< window.innerWidth-this.width-50) {
+                    this.x += 50;
+                }
                 break;
         }
     }

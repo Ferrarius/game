@@ -57,11 +57,8 @@ var Enemy = (function (_super) {
                 this.x += 50;
                 break;
         }
-        for (var i = 0; i < 50; i++) {
-            console.log(this.x, this.y);
-            if (this.y - i === window.innerHeight || this.x - i === window.innerWidth || this.y + i === window.innerHeight || this.x + i === window.innerWidth || this.y + i === 0 || this.x + i === 0 || this.y - i === 0 || this.x - i === 0) {
-                this.reset();
-            }
+        if (this.y < 0 || this.y > innerHeight - this.height - 50 || this.x < 0 || this.x > innerWidth - this.width - 50) {
+            this.reset();
         }
     };
     Enemy.prototype.reset = function () {
@@ -72,28 +69,18 @@ var Enemy = (function (_super) {
 }(GameObject));
 var Game = (function () {
     function Game() {
-        this.player1 = new PlayerOne();
-        this.player2 = new PlayerTwo();
-        this.enemy = new Enemy();
-        this.gameLoop();
+        this.screen = new StartScreen(this);
     }
-    Game.prototype.gameLoop = function () {
-        var _this = this;
-        this.player1.update();
-        this.player2.update();
-        this.enemy.update();
-        if (Game.checkCollision(this.player1.getPosition(), this.enemy.getPosition())) {
-            this.player1.addScore();
-            this.enemy.reset();
-        }
-        if (Game.checkCollision(this.player2.getPosition(), this.enemy.getPosition())) {
-            this.player2.addScore();
-            this.enemy.reset();
-        }
-        requestAnimationFrame(function () { return _this.gameLoop(); });
+    Game.prototype.startGame = function () {
+        Game.clearScreens();
+        this.screen = new GameScreen(this);
     };
-    Game.checkCollision = function (player, enemy) {
-        return (player.left <= enemy.right && enemy.left <= player.right && player.top <= enemy.bottom && enemy.top <= player.bottom);
+    Game.prototype.endGame = function (winner) {
+        Game.clearScreens();
+        this.screen = new EndScreen(winner);
+    };
+    Game.clearScreens = function () {
+        document.body.innerHTML = '';
     };
     return Game;
 }());
@@ -102,6 +89,7 @@ var Player = (function (_super) {
     function Player(name, x, y, color, upKey, leftKey, downKey, rightKey) {
         var _this = _super.call(this, name, color, 100, 100, x, y) || this;
         _this.score = 0;
+        _this.name = name;
         _this.element.innerText = _this.score.toString();
         _this.element.style.fontSize = '50px';
         _this.element.style.textAlign = 'center';
@@ -111,16 +99,24 @@ var Player = (function (_super) {
     Player.prototype.onKeyDown = function (event, upKey, leftKey, downKey, rightKey) {
         switch (event.key) {
             case upKey:
-                this.y -= 50;
+                if (this.y > 0) {
+                    this.y -= 50;
+                }
                 break;
             case leftKey:
-                this.x -= 50;
+                if (this.x > 0) {
+                    this.x -= 50;
+                }
                 break;
             case downKey:
-                this.y += 50;
+                if (this.y < window.innerHeight - this.height - 50) {
+                    this.y += 50;
+                }
                 break;
             case rightKey:
-                this.x += 50;
+                if (this.x < window.innerWidth - this.width - 50) {
+                    this.x += 50;
+                }
                 break;
         }
     };
@@ -130,21 +126,61 @@ var Player = (function (_super) {
     };
     return Player;
 }(GameObject));
-var PlayerOne = (function (_super) {
-    __extends(PlayerOne, _super);
-    function PlayerOne() {
-        return _super.call(this, 'player1', 0, 0, 'blue', 'w', 'a', 's', 'd') || this;
-    }
-    return PlayerOne;
-}(Player));
-var PlayerTwo = (function (_super) {
-    __extends(PlayerTwo, _super);
-    function PlayerTwo() {
-        return _super.call(this, 'player2', 0, 100, 'red', 'ArrowUp', 'ArrowLeft', 'ArrowDown', 'ArrowRight') || this;
-    }
-    return PlayerTwo;
-}(Player));
 window.addEventListener("load", function () {
     new Game();
 });
+var EndScreen = (function () {
+    function EndScreen(winner) {
+        var h1 = document.createElement('h1');
+        h1.innerText = winner.name + ' heeft gewonnen!';
+        document.body.appendChild(h1);
+    }
+    return EndScreen;
+}());
+var GameScreen = (function () {
+    function GameScreen(game) {
+        this.game = game;
+        this.player1 = new Player('player1', 0, 0, 'blue', 'w', 'a', 's', 'd');
+        this.player2 = new Player('player2', 0, 100, 'red', 'ArrowUp', 'ArrowLeft', 'ArrowDown', 'ArrowRight');
+        this.enemy = new Enemy();
+        this.gameLoop();
+    }
+    GameScreen.prototype.gameLoop = function () {
+        var _this = this;
+        this.player1.update();
+        this.player2.update();
+        this.enemy.update();
+        if (GameScreen.checkCollision(this.player1.getPosition(), this.enemy.getPosition())) {
+            this.player1.addScore();
+            this.enemy.reset();
+        }
+        if (GameScreen.checkCollision(this.player2.getPosition(), this.enemy.getPosition())) {
+            this.player2.addScore();
+            this.enemy.reset();
+        }
+        if (this.player1.score == 5) {
+            this.game.endGame(this.player1);
+        }
+        else if (this.player2.score == 5) {
+            this.game.endGame(this.player2);
+        }
+        requestAnimationFrame(function () { return _this.gameLoop(); });
+    };
+    GameScreen.checkCollision = function (player, enemy) {
+        return (player.left <= enemy.right && enemy.left <= player.right && player.top <= enemy.bottom && enemy.top <= player.bottom);
+    };
+    return GameScreen;
+}());
+var StartScreen = (function () {
+    function StartScreen(game) {
+        var _this = this;
+        this.game = game;
+        var image = document.createElement('img');
+        image.src = 'http://blog.conqueryourdebt.org/wp-content/uploads/2013/05/Startnow_button-1024x700.jpg';
+        image.style.width = '100%';
+        image.addEventListener("click", function () { return _this.game.startGame(); });
+        document.body.appendChild(image);
+    }
+    return StartScreen;
+}());
 //# sourceMappingURL=main.js.map
