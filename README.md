@@ -1,4 +1,5 @@
 # Game
+De voorbeelden in de volgende stukken uitleg kunnen verouderde code bevatten.
 ## Checklist
 - [x] De code van het individuele project staat op GitHub.
 - [x] De game is online speelbaar.
