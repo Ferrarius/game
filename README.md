@@ -206,7 +206,7 @@ https://www.lucidchart.com/invitations/accept/4fc754f5-273d-4812-8ee7-cafc3465fc
         op die plek toegepast. De uitleg is inclusief code voorbeelden.
     - [x] Een klassendiagram van de game.
     - [x] Een link naar de peer review die in week 6 is gedaan
-## Extra opdrachten
+### Extra opdrachten
 - [ ] De game ziet er zeer verzorgd uit dankzij goed uitgewerkt UI design en artwork.
 - [ ] De game bevat een hiscore lijst. Scores worden bewaard nadat de game is afgesloten.
 - [ ] De game werkt met Canvas in plaats van DOM elementen
